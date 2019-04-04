@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h3>
+            {{title}}
+        </h3>
+        <div>
+            姓名：<input type="text" v-model="username" value="">
+            <span>{{username}}</span>
+        </div>
+        <div>
+             数组：{{arr}}
+        </div>
+        <button @click="changeArr">改变</button>
+    </div>
+    
+<script src="./mue.js"></script>
+<script>
+    var mue = new Mue({
+        el: '#app',
+        data: {
+            title: 'Mue',
+            username: 'user',
+            arr: ['green', 'black', 'orange', 'white', 'yellow']
+        },
+        methods: {
+            changeArr: function() {
+                // this.arr = []
+                console.log(this)
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
