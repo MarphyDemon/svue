@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Meta -->
+    <meta charset="UTF-8" />
+    <title>Vue.JS Example</title>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
+  </head>
+
+  <body>
+    <div id="demo">
+      <div>
+        <h4>push、pop、shift、unshift、splice、sort和reverse</h4>
+        <ul>
+          <li v-for="item in data1">{{ item }}</li>
+        </ul>
+        <button @click="addArray">Add Array1</button>
+        <button @click="reduceArray">Reduce Array1</button>
+      </div>
+
+      <div>
+        <h4>filter、concat、slice</h4>
+        <ul>
+          <li v-for="item in data2">{{ item }}</li>
+        </ul>
+        <button @click="getEven">Get EvenNumber</button>
+        <button @click="concat">Concat Array</button>
+      </div>
+      <div>
+        <h4>使用下标、直接修改数组长度</h4>
+        <ul>
+          <li v-for="item in data3">{{ item }}</li>
+        </ul>
+        <button @click="byTab">By Tab</button>
+        <button @click="changeLen">Change length</button>
+      </div>
+      <div>
+        <h4>通过set改变数组，通过splice改变数组长度</h4>
+        <ul>
+          <li v-for="item in data4">{{ item }}</li>
+        </ul>
+        <button @click="bySet">Set</button>
+        <button @click="bySplice">Splice</button>
+      </div>
+      <div>{{obj.key}}</div>
+      <button @click="change">change</button>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      var app = new Vue({
+        el: "#demo",
+        mounted() {},
+        methods: {
+          // push、pop、shift、unshift、splice、sort和reverse
+          addArray() {
+            let len = this.data1.length;
+            this.data1.push(this.data1[len - 1] + 1);
+            alert(this.data1);
+          },
+          reduceArray() {
+            let len = this.data1.length;
+            this.data1.pop(this.data1[len - 1]);
+            alert(this.data1);
+          },
+          // filter、concat、slice
+          getEven() {
+            this.data2.filter(item => item % 2 == 0);
+            alert(this.data2);
+          },
+          concat() {
+            let newArr = [1, 2, 3, 4];
+            this.data2.concat(newArr);
+            alert(this.data2);
+          },
+          // 使用下标、直接修改数组长度
+          byTab() {
+            this.data3[1] = 32;
+            // alert(this.data3);
+          },
+          changeLen() {
+            this.data3.length = 4;
+            alert(this.data3);
+          },
+          // 通过set改变数组，通过splice改变数组长度
+          bySet() {
+            this.$set(this.data4,1,'bySet')
+            alert(this.data4)
+          },
+          bySplice() {
+            this.data4.splice(3)
+            alert(this.data4)
+          },
+          change () {
+            this.obj.key = 2
+          }
+        },
+        data: function() {
+          return {
+            obj: {
+              key: 1
+            },
+            data1: [1, 2, 3, 4, 5, 6, 7],
+            data2: [11, 12, 13, 14, 15, 16, 17],
+            data3: [21, 22, 23, 24, 25, 26, 27],
+            data4: [31, 33, 33, 34, 35, 36, 37]
+          };
+        }
+      });
+    </script>
+  </body>
+</html>

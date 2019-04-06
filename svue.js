@@ -1,7 +1,7 @@
 
 function Observer(data) {
     if(Array.isArray(data)) {
-        console.log("data is Array！")
+        protoAugment(data, arrayMethods, arraykeys)
     }else {
         this.runOb(data)
     }
@@ -122,17 +122,34 @@ function hasEvent(nodeAttr) {
     return nodeAttr.name.indexOf('@')>=0||nodeAttr.name.indexOf('v-on:')>=0?nodeAttr:false
 }
 
-function Mue(options) {
+function Svue(options) {
     this.$options = options || {};
     this.$vm = this;
     var data = this._data = this.$options.data;
+    this._proxy(data)
     this.initData(data)
     this.methods = options.methods
     this.$compile = new Compile(options.el || document.body, this)
 }
 
-Mue.prototype = {
+Svue.prototype = {
     initData: function(data) {
         new Observer(data)
     },
+    _proxy: function(data) {
+        let that = this;
+        for(var i=0; i<Object.keys(data).length;i++) {
+            let key = Object.keys(data)[i]
+            Object.defineProperty(that, Object.keys(data)[i], {
+                enumerable: true,
+                configurable: true,
+                get: function() {
+                    return that._data[key]
+                },
+                set: function(newVal) {
+                    that._data[key] = newVal
+                }
+            })
+        }
+    }
 }

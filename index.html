@@ -17,22 +17,21 @@
         <div>
              数组：{{arr}}
         </div>
-        <button @click="changeArr">改变</button>
+        <button @click="changeArr">改变Title</button>
     </div>
     
-<script src="./mue.js"></script>
+<script src="./svue.js"></script>
 <script>
-    var mue = new Mue({
+    var svue = new Svue({
         el: '#app',
         data: {
-            title: 'Mue',
+            title: 'Svue',
             username: 'user',
             arr: ['green', 'black', 'orange', 'white', 'yellow']
         },
         methods: {
             changeArr: function() {
-                // this.arr = []
-                console.log(this)
+                this.title="Svue-M"
             }
         }
     });
