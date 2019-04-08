@@ -127,11 +127,18 @@ function Watcher(node, attr, data, key, type) {
 }
 Watcher.prototype = {
     update: function() {
-        this.type==1?this.node.textContent = this.data[this.key]:''
+        let value = this.data
+        if(this.key.indexOf('.')){
+            this.key.split(".").forEach(item=>{
+                let keyWord = item;
+                value = value[keyWord]
+            })
+        }
+        this.type==1?this.node.textContent = value:''
         if(this.type==2 ) {
             let me = this;
             for(let i=0;i<this.node.attributes.length;i++){
-                this.node.attributes[i].name=='value'?this.node.attributes[i].value = this.data[this.key]:''
+                this.node.attributes[i].name=='value'?this.node.attributes[i].value = value:''
             }
             this.node.addEventListener('input', function(e) {
                 var newValue = e.target.value;

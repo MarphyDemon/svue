@@ -45,6 +45,8 @@
             <button @click="bySplice">Splice</button>
           </div>
         </div>
+        <h6>{{obj.key}}</h6>
+        <button @click="changeKey">改变关键词</button>
 
     <!-- Scripts -->
     <script>
@@ -91,13 +93,20 @@
             this.data4.splice(3)
             alert(this.data4)
           },
+          changeKey() {
+            this.obj.key = "vue"
+            console.log(this.obj.key)
+          }
         },
         data: function() {
           return {
             data1: [1, 2, 3, 4, 5, 6, 7],
             data2: [11, 12, 13, 14, 15, 16, 17],
             data3: [21, 22, 23, 24, 25, 26, 27],
-            data4: [31, 33, 33, 34, 35, 36, 37]
+            data4: [31, 33, 33, 34, 35, 36, 37],
+            obj: {
+              key: "关键词"
+            }
           };
         }
       });
