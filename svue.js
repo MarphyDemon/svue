@@ -1,11 +1,63 @@
+//  数组的特殊处理
+MethodsToPatch = [
+    "push",
+    "pop",
+    "shift",
+    "unshift",
+    "splice",
+    "sort",
+    "reverse"
+]
+
+var arrayProto = Array.prototype
+const arrayMethods = Object.create(arrayProto)
+
+MethodsToPatch.forEach(function(method){
+    const oldMethods = arrayMethods[method]
+    def(arrayMethods, method, function(...args){
+        let result = oldMethods.apply(this, args)
+        const ob = this.__ob__
+        let inserted
+        switch (method) {
+            case "push":
+            case "unshift":
+                inserted = args
+                break
+            case "splice":
+                inserted = args.slice(2)
+                break
+        }
+        if(inserted) ob.observeArray(inserted)
+        ob.dep.notify()
+        return result
+    })
+})
+
+function def(obj, key, val, enumerable) {
+    Object.defineProperty(obj, key, {
+        value: val,
+        enumerable: !!enumerable,
+        writable: true,
+        configurable: true,
+    })
+}
 
 function Observer(data) {
+    this.data = data;
+    this.dep = new Dep();
+    def(data, '__ob__', this)
     if(Array.isArray(data)) {
-        protoAugment(data, arrayMethods, arraykeys)
+        protoAugment(data, arrayMethods)
+        this.observeArray(data)
     }else {
         this.runOb(data)
     }
 }
+
+function protoAugment(value, arrayMethods) {
+    value.__proto__ = arrayMethods
+}
+
 Observer.prototype = {
     runOb: function(data) {
         Object.keys(data).forEach(key => {
@@ -20,17 +72,39 @@ Observer.prototype = {
             configurable: true, // 不能再define
             get: function() {
                 if(Dep.target){
-                    dep.addSub(Dep.target)
+                    dep.depend()
+                    if(child){
+                        child.dep.depend()
+                        if(Array.isArray(value)){
+                            dependArray(value)
+                        }
+                    }
                 }
                 return value
             },
             set: function(newVal) {
                 if(newVal != value){
                     value = newVal
+                    childObj = observe(newVal);
                     dep.notify()
                 }
             }
         })
+    },
+    observeArray: function(value) {
+        for(let i=0;i<value.length;i++){
+            observe(value[i])
+        }
+    }
+}
+
+function dependArray(val) {
+    for(let i=0;i<val.length;i++) {
+        let e = val[i]
+        e && e.__ob__ && e.__ob__.dep.depend()
+        if(Array.isArray(e)){
+            dependArray(e)
+        }
     }
 }
 
@@ -47,30 +121,47 @@ function Watcher(node, attr, data, key, type) {
     this.data = data;
     this.type = type
     this.key = key;
+    this.depIds = {};
     Dep.target = this;
     this.update();
 }
-Watcher.prototype.update = function() {
-    this.type==1?this.node.textContent = this.data[this.key]:''
-    if(this.type==2 ) {
-        let me = this;
-        for(let i=0;i<this.node.attributes.length;i++){
-            this.node.attributes[i].name=='value'?this.node.attributes[i].value = this.data[this.key]:''
-        }
-        this.node.addEventListener('input', function(e) {
-            var newValue = e.target.value;
-            if (me.data[me.key] === newValue) {
-                return;
+Watcher.prototype = {
+    update: function() {
+        this.type==1?this.node.textContent = this.data[this.key]:''
+        if(this.type==2 ) {
+            let me = this;
+            for(let i=0;i<this.node.attributes.length;i++){
+                this.node.attributes[i].name=='value'?this.node.attributes[i].value = this.data[this.key]:''
             }
-            me.data[me.key] = newValue
-        });
+            this.node.addEventListener('input', function(e) {
+                var newValue = e.target.value;
+                if (me.data[me.key] === newValue) {
+                    return;
+                }
+                me.data[me.key] = newValue
+            });
+        }
+    },
+    addDep: function(dep) {
+        if (!this.depIds.hasOwnProperty(dep.id)) {
+            dep.addSub(this);
+            this.depIds[dep.id] = dep;
+        }
     }
+
 }
 
+let uid=0
 function Dep() {
+    this.id = uid++;
     this.subs = []
 }
 Dep.prototype = {
+    depend: function() {
+        if (Dep.target) {
+            Dep.target.addDep(this)
+        }
+    },
     addSub: function(sub) {
         this.subs.push(sub)
     },

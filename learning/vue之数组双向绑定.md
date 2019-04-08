@@ -17,7 +17,6 @@ push = function () {
     console.log('resetPush')
     pushFun();
 }
-
 ```
 
 ## 响应式数据之处理数组
