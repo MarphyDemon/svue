@@ -17,7 +17,7 @@
         <div>
              数组：{{arr}}
         </div>
-        <button @click="changeTitle">改变Title</button>
+        <button @click="changeUsername">改变username</button>
         <button @click="changeByPush">push改变Arr</button>
     </div>
     
@@ -31,8 +31,8 @@
             arr: ['green', 'black', 'orange', 'white', 'yellow']
         },
         methods: {
-            changeTitle: function() {
-                this.title="Svue-M"
+            changeUsername: function() {
+                this.username="Svue-M"
             },
             changeByPush: function() {
                 this.arr.push("red")

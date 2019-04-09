@@ -127,20 +127,21 @@ function Watcher(node, attr, data, key, type) {
 }
 Watcher.prototype = {
     update: function() {
-        let value = this._getVMVal(this.data, this.key)
+        let value = this.getDataVal(this.data, this.key)
+        console.log(this.data.username, this.node,this.type)
         this.type==1?this.node.textContent = value:''
         if(this.type==2 ) {
             let me = this;
             for(let i=0;i<this.node.attributes.length;i++){
-                this.node.attributes[i].name=='value'?this.node.attributes[i].value = value:''
+                this.node.value = value
             }
             this.node.addEventListener('input', function(e) {
-                value = me._getVMVal(me.data, me.key);
+                value = me.getDataVal(me.data, me.key);
                 var newValue = e.target.value;
                 if (value === newValue) {
                     return;
                 }
-                me._setVMVal(me.data, me.key, newValue)
+                me.setDataVal(me.data, me.key, newValue)
                 value = newValue
             });
         }
@@ -151,20 +152,19 @@ Watcher.prototype = {
             this.depIds[dep.id] = dep;
         }
     },
-    _getVMVal: function(vm, exp) {
-        var val = vm;
-        exp = exp.split('.');
-        exp.forEach(k=> {
+    getDataVal: function(data, key) {
+        var val = data;
+        key = key.split('.');
+        key.forEach(k=> {
             val = val[k];
         });
         return val;
     },
-    
-    _setVMVal: function(vm, exp, value) {
-        var val = vm;
-        exp = exp.split('.');
-        exp.forEach((k, i)=> {
-            if (i < exp.length - 1) {
+    setDataVal: function(data, key, value) {
+        var val = data;
+        key = key.split('.');
+        key.forEach((k, i)=> {
+            if (i < key.length - 1) {
                 val = val[k];
             } else {
                 val[k] = value;
