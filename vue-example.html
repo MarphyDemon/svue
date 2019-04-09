@@ -44,9 +44,9 @@
             <button @click="bySet">Set</button>
             <button @click="bySplice">Splice</button>
           </div>
+          <h6>{{obj.key}}</h6>
+          <button @click="changeKey">改变关键词</button>
         </div>
-        <h6>{{obj.key}}</h6>
-        <button @click="changeKey">改变关键词</button>
 
     <!-- Scripts -->
     <script>
@@ -68,6 +68,7 @@
           // filter、concat、slice
           getEven() {
             this.data2.filter(item => item % 2 == 0);
+            // this.data2 = this.data2.filter(item => item % 2 == 0);
             alert(this.data2);
           },
           concat() {

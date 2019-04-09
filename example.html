@@ -42,6 +42,7 @@
         <button @click="bySplice">Splice</button>
       </div>
       <h6>{{obj.key}}</h6>
+      key:<input type="text" v-model="obj.key" value="">
       <button @click="changeKey">改变关键词</button>
     </div>
 <script src="./svue.js"></script>
@@ -75,6 +76,7 @@
           // filter、concat、slice
           getEven() {
             this.data2.filter(item => item % 2 == 0);
+            // this.data2 = this.data2.filter(item => item % 2 == 0);
             alert(this.data2);
           },
           concat() {

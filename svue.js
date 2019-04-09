@@ -127,13 +127,7 @@ function Watcher(node, attr, data, key, type) {
 }
 Watcher.prototype = {
     update: function() {
-        let value = this.data
-        if(this.key.indexOf('.')){
-            this.key.split(".").forEach(item=>{
-                let keyWord = item;
-                value = value[keyWord]
-            })
-        }
+        let value = this._getVMVal(this.data, this.key)
         this.type==1?this.node.textContent = value:''
         if(this.type==2 ) {
             let me = this;
@@ -141,11 +135,13 @@ Watcher.prototype = {
                 this.node.attributes[i].name=='value'?this.node.attributes[i].value = value:''
             }
             this.node.addEventListener('input', function(e) {
+                value = me._getVMVal(me.data, me.key);
                 var newValue = e.target.value;
-                if (me.data[me.key] === newValue) {
+                if (value === newValue) {
                     return;
                 }
-                me.data[me.key] = newValue
+                me._setVMVal(me.data, me.key, newValue)
+                value = newValue
             });
         }
     },
@@ -154,6 +150,26 @@ Watcher.prototype = {
             dep.addSub(this);
             this.depIds[dep.id] = dep;
         }
+    },
+    _getVMVal: function(vm, exp) {
+        var val = vm;
+        exp = exp.split('.');
+        exp.forEach(k=> {
+            val = val[k];
+        });
+        return val;
+    },
+    
+    _setVMVal: function(vm, exp, value) {
+        var val = vm;
+        exp = exp.split('.');
+        exp.forEach((k, i)=> {
+            if (i < exp.length - 1) {
+                val = val[k];
+            } else {
+                val[k] = value;
+            }
+        });
     }
 
 }
@@ -232,7 +248,7 @@ function Svue(options) {
 
 Svue.prototype = {
     initData: function(data) {
-        new Observer(data)
+        observe(data)
     },
     _proxy: function(data) {
         let that = this;
