@@ -6,111 +6,111 @@
     <title>vue.JS 数组双向绑定</title>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="./vue.js"></script>
   </head>
-
-  <body>
-    <div id="demo">
+    <body>
+      <div id="demo">
         <div>
-            <h4>push、pop、shift、unshift、splice、sort和reverse</h4>
-            <span>
-              {{data1}}
-            </span>
-            <button @click="addArray">Add Array1</button>
-            <button @click="reduceArray">Reduce Array1</button>
-          </div>
-    
-          <div>
-            <h4>filter、concat、slice</h4>
-            <span>
-              {{data2}}
-            </span>
-            <button @click="getEven">Get EvenNumber</button>
-            <button @click="concat">Concat Array</button>
-          </div>
-          <div>
-            <h4>使用下标、直接修改数组长度</h4>
-            <span>
-              {{data3}}
-            </span>
-            <button @click="byTab">By Tab</button>
-            <button @click="changeLen">Change length</button>
-          </div>
-          <div>
-            <h4>通过set改变数组，通过splice改变数组长度</h4>
-            <span>
-              {{data4}}
-            </span>
-            <button @click="bySet">Set</button>
-            <button @click="bySplice">Splice</button>
-          </div>
-          <h6>{{obj.key}}</h6>
-          <button @click="changeKey">改变关键词</button>
+          <h4>push、pop、shift、unshift、splice、sort和reverse</h4>
+          <span>
+            {{data1}}
+          </span>
+          <button @click="addArray">通过push改变数组</button>
+          <button @click="reduceArray">通过pop改变数组</button>
         </div>
-
-    <!-- Scripts -->
-    <script>
-      var app = new Vue({
-        el: "#demo",
-        mounted() {},
-        methods: {
-          // push、pop、shift、unshift、splice、sort和reverse
-          addArray() {
-            let len = this.data1.length;
-            this.data1.push(this.data1[len - 1] + 1);
-            alert(this.data1);
+  
+        <div>
+          <h4>filter、concat、slice</h4>
+          <span>
+            {{data2}}
+          </span>
+          <button @click="getEven">通过filter修改数组</button>
+          <button @click="concat">通过concat修改数组</button>
+        </div>
+        <div>
+          <h4>使用下标、直接修改数组长度</h4>
+          <span>
+            {{data3}}
+          </span>
+          <button @click="byTab">通过下标改变数组第二位</button>
+          <button @click="changeLen">通过length直接改变数组长度</button>
+        </div>
+        <div>
+          <h4>通过set改变数组，通过splice改变数组长度</h4>
+          <span>
+            {{data4}}
+          </span>
+          <button @click="bySet">通过set改变数组</button>
+          <button @click="bySplice">通过splice改变数组</button>
+        </div>
+        <!-- <h6>{{obj.key}}</h6>
+        key:<input type="text" v-model="obj.key" value="">
+        <button @click="changeKey">改变关键词</button> -->
+      </div>
+      <!-- Scripts -->
+      <script>
+  
+        var app = new Vue({
+          el: "#demo",
+          data: {
+              data1: [1, 2, 3, 4, 5, 6, 7],
+              data2: [11, 12, 13, 14, 15, 16, 17],
+              data3: [21, 22, 23, 24, 25, 26, 27],
+              data4: [31, 33, 33, 34, 35, 36, 37],
+              obj: {
+                key: "关键词"
+              }
           },
-          reduceArray() {
-            let len = this.data1.length;
-            this.data1.pop(this.data1[len - 1]);
-            alert(this.data1);
-          },
-          // filter、concat、slice
-          getEven() {
-            this.data2.filter(item => item % 2 == 0);
-            // this.data2 = this.data2.filter(item => item % 2 == 0);
-            alert(this.data2);
-          },
-          concat() {
-            let newArr = [1, 2, 3, 4];
-            this.data2.concat(newArr);
-            alert(this.data2);
-          },
-          // 使用下标、直接修改数组长度
-          byTab() {
-            this.data3[1] = 32;
-            // alert(this.data3);
-          },
-          changeLen() {
-            this.data3.length = 4;
-            alert(this.data3);
-          },
-          // 通过set改变数组，通过splice改变数组长度
-          bySet() {
-            this.$set(this.data4,1,'bySet')
-            alert(this.data4)
-          },
-          bySplice() {
-            this.data4.splice(3)
-            alert(this.data4)
-          },
-          changeKey() {
-            this.obj.key = "vue"
-            console.log(this.obj.key)
-          }
-        },
-        data: function() {
-          return {
-            data1: [1, 2, 3, 4, 5, 6, 7],
-            data2: [11, 12, 13, 14, 15, 16, 17],
-            data3: [21, 22, 23, 24, 25, 26, 27],
-            data4: [31, 33, 33, 34, 35, 36, 37],
-            obj: {
-              key: "关键词"
+          mounted() {},
+          methods: {
+            // push、pop、shift、unshift、splice、sort和reverse
+            addArray() {
+              let len = this.data1.length;
+              this.data1.push(this.data1[len - 1] + 1);
+              alert(this.data1);
+            },
+            reduceArray() {
+              let len = this.data1.length;
+              this.data1.pop(this.data1[len - 1]);
+              alert(this.data1);
+            },
+            // filter、concat、slice
+            getEven() {
+              this.data2.filter(item => item % 2 == 0);
+              // this.data2 = this.data2.filter(item => item % 2 == 0);
+              alert(this.data2);
+            },
+            concat() {
+              let newArr = [1, 2, 3, 4];
+              this.data2.concat(newArr);
+              alert(this.data2);
+            },
+            // 使用下标、直接修改数组长度
+            byTab() {
+              this.data3[1] = "我是通过下标改变的";
+              alert(this.data3);
+            },
+            changeLen() {
+              this.data3.length = 4;
+              alert(this.data3);
+            },
+            // 通过set改变数组，通过splice改变数组长度
+            bySet() {
+              this.$set(this.data4,1,'bySet')
+              alert(this.data4)
+            },
+            bySplice() {
+              this.data4.splice(3)
+              alert(this.data4)
+            },
+            changeKey() {
+              this.obj.key = "vue"
+              console.log(this.obj.key)
             }
-          };
-        }
-      });
-    </script>
-  </body>
-</html>
+          },
+          
+        });
+      </script>
+    </body>
+  </html>
+  

@@ -1,30 +1,3 @@
-//  数组的特殊处理
-MethodsToPatch = ["push","pop","shift","unshift","splice","sort","reverse"]
-
-var arrayProto = Array.prototype  //  获取数组__proto__的数组构造函数的原型
-const arrayMethods = Object.create(arrayProto) 
-// 创建一个新的对象arrayMethods，并且该对象的原型为数组构造函数的原型
-MethodsToPatch.forEach(function(method){
-    const oldMethods = arrayMethods[method]
-    def(arrayMethods, method, function(...args){
-        let result = oldMethods.apply(this, args)
-        const ob = this.__ob__
-        let inserted
-        switch (method) {
-            case "push":
-            case "unshift":
-                inserted = args
-                break
-            case "splice":
-                inserted = args.slice(2)
-                break
-        }
-        if(inserted) ob.observeArray(inserted)
-        ob.dep.notify()
-        return result
-    })
-})
-
 //  def 函数其实就是 Object.defineProperty 函数的简单封装，
 //  之所以这里使用 def 函数定义 __ob__ 属性是因为这样可以定义不可枚举的属性，
 //  这样后面遍历数据对象的时候就能够防止遍历到 __ob__ 属性。
@@ -36,79 +9,54 @@ function def(obj, key, val, enumerable) {
         configurable: true,
     })
 }
-
 function Observer(data) {
-    this.data = data;
-    this.dep = new Dep();
-    def(data, '__ob__', this)
-    if(Array.isArray(data)) {
-        protoAugment(data, arrayMethods)
-        this.observeArray(data)
-    }else {
-        this.runOb(data)
-    }
+    let newData = new Proxy(data, {
+        get (target, property) {
+            console.log(target)
+            return target[property]
+        },
+        set (target, property, newValue) {
+            target[property] = newValue;
+        }
+    })
 }
 function protoAugment(value, arrayMethods) {
     value.__proto__ = arrayMethods
 }
 
-Observer.prototype = {
-    runOb: function(data) {
-        Object.keys(data).forEach(key => {
-            this.defineReactive(data, key, data[key])
-        })
-    },
-    defineReactive: function(data, key, value) {
-        var dep = new Dep();
-        var child = observe(value);
-        Object.defineProperty(data, key, {
-            enumerable: true, // 可枚举
-            configurable: true, // 不能再define
-            get: function() {
-                console.log(212,key)
-                if(Dep.target){
-                    dep.depend()
-                    if(child){
-                        child.dep.depend()
-                        if(Array.isArray(value)){
-                            dependArray(value)
-                        }
-                    }
-                }
-                return value
-            },
-            set: function(newVal) {
-                if(newVal != value){
-                    value = newVal
-                    childObj = observe(newVal);
-                    dep.notify()
-                }
-            }
-        })
-    },
-    observeArray: function(value) {
-        for(let i=0;i<value.length;i++){
-            observe(value[i])
-        }
-    }
-}
+// Observer.prototype = {
+//     runOb: function(data) {
+//         Object.keys(data).forEach(key => {
+//             this.defineReactive(data, data[key])
+//         })
+//         // console.log(data)
+        
+//     },
+//     defineReactive: function(data, value) {
+//         var child = observe(value);
+//         let newData = new Proxy(data,{
+//             get:function(target,key,receiver){
+//                 console.log(target[key])
+//                 return target[key]
+//             },
+//             set:function(target,key,value,receiver){
+//                 target[key] = value;
+//                 observe(value)
+//                 console.log(`修改了key:${key},新值：${value}`)
+//                 return true
+//             }
+//         })
+//         console.log(newData)
+//     }
+// }
 
-function dependArray(val) {
-    for(let i=0;i<val.length;i++) {
-        let e = val[i]
-        e && e.__ob__ && e.__ob__.dep.depend()
-        if(Array.isArray(e)){
-            dependArray(e)
-        }
-    }
-}
 
-function observe(value) {
-    if (!value || typeof value !== 'object') {
-        return;
-    }
-    return new Observer(value)
-}
+// function observe(value) {
+//     if (!value || typeof value !== 'object' || Array.isArray(value)) {
+//         return;
+//     }
+//     return new Observer(value)
+// }
 
 function Watcher(node, attr, data, key, type) {
     this.node = node;
@@ -235,7 +183,9 @@ function Svue(options) {
     this.methods = options.methods
     var data = this._data = this.$options.data;
     this._proxy(data)
-    this.initData(data)
+    // this.initData(data)
+    this.data = data
+    Observer(this.data)
     this.$compile = new Compile(options.el || document.body, this)
     console.log(this)
 }

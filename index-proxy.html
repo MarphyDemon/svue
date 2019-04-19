@@ -21,17 +21,8 @@
         <button @click="changeByPush">push改变Arr</button>
     </div>
     
-<script src="./svue.js"></script>
+<script src="./svue-proxy.js"></script>
 <script>
-    function sayHello () {
-        console.log('hello')
-    }
-    const originalSayHello = sayHello
-    sayHello = function () {
-        console.log('Hi')
-        originalSayHello()
-    }
-    sayHello()
     var svue = new Svue({
         el: '#app',
         data: {
@@ -41,7 +32,9 @@
         },
         methods: {
             changeUsername: function() {
+                console.log(this.username)
                 this.username="Svue-M"
+                console.log(this.username)
             },
             changeByPush: function() {
                 this.arr.push("red")
@@ -49,20 +42,6 @@
         }
     });
 
-    var oldobj = [2]
-    var obj = new Proxy(oldobj,{
-        get:function(target,key,receiver){
-            return target[key]
-        },
-        set:function(target,key,value,receiver){
-            target[key] = value;
-            console.log(`修改了key:${key},新值：${value}`)
-            return true
-        }
-    })
-    oldobj.push(1)
-    obj.push(32)
-    console.log(oldobj, obj)
 </script>
 </body>
 </html>

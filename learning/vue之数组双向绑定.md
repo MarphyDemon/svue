@@ -9,6 +9,7 @@ date: 2019-3-14
 ## vue拦截数组变异方法的思路
 
 ``` js
+
 function push () {
     console.log('push')
 }
@@ -17,6 +18,7 @@ push = function () {
     console.log('resetPush')
     pushFun();
 }
+
 ```
 
 ## 响应式数据之处理数组

@@ -13,8 +13,8 @@
         <span>
           {{data1}}
         </span>
-        <button @click="addArray">Add Array1</button>
-        <button @click="reduceArray">Reduce Array1</button>
+        <button @click="addArray">通过push改变数组</button>
+        <button @click="reduceArray">通过pop改变数组</button>
       </div>
 
       <div>
@@ -22,28 +22,28 @@
         <span>
           {{data2}}
         </span>
-        <button @click="getEven">Get EvenNumber</button>
-        <button @click="concat">Concat Array</button>
+        <button @click="getEven">通过filter修改数组</button>
+        <button @click="concat">通过concat修改数组</button>
       </div>
       <div>
         <h4>使用下标、直接修改数组长度</h4>
         <span>
           {{data3}}
         </span>
-        <button @click="byTab">By Tab</button>
-        <button @click="changeLen">Change length</button>
+        <button @click="byTab">通过下标改变数组第二位</button>
+        <button @click="changeLen">通过length直接改变数组长度</button>
       </div>
       <div>
         <h4>通过set改变数组，通过splice改变数组长度</h4>
         <span>
           {{data4}}
         </span>
-        <button @click="bySet">Set</button>
-        <button @click="bySplice">Splice</button>
+        <button @click="bySet">通过set改变数组</button>
+        <button @click="bySplice">通过splice改变数组</button>
       </div>
-      <h6>{{obj.key}}</h6>
+      <!-- <h6>{{obj.key}}</h6>
       key:<input type="text" v-model="obj.key" value="">
-      <button @click="changeKey">改变关键词</button>
+      <button @click="changeKey">改变关键词</button> -->
     </div>
 <script src="./svue.js"></script>
     <!-- Scripts -->
@@ -86,7 +86,7 @@
           },
           // 使用下标、直接修改数组长度
           byTab() {
-            this.data3[1] = 32;
+            this.data3[1] = "我是通过下标改变的";
             alert(this.data3);
           },
           changeLen() {
